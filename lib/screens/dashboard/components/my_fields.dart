@@ -47,7 +47,7 @@ class _MyFilesState extends State<MyFiles> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Solved Count: $solvedCount",
+              "Complaints Resolve",
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ],
