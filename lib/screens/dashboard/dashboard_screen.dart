@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:admin/models/customerModel.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/components/my_fields.dart';
+import 'package:admin/viewmodel/percentage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../constants.dart';
@@ -18,13 +19,17 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   List<CustomerDetail> customerDetails = []; // Add this line
-
+  StatusPercentage statusPercentage = StatusPercentage();
   @override
   void initState() {
     super.initState();
     fetchData();
   }
 
+  int solvedCount = 0;
+  int unsolvedCount = 0;
+  double solvedPercentage = 0;
+  double unsolvedPercentage = 0;
   Future<void> fetchData() async {
     final apiUrl = 'https://twilio-backend-4rh3.onrender.com/get-all-data';
 
@@ -35,10 +40,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
         List<dynamic> data = json.decode(response.body);
         List<CustomerDetail> fetchedDetails =
             data.map((json) => CustomerDetail.fromJson(json)).toList();
+        solvedCount = fetchedDetails.where((detail) => detail.solved).length;
+        unsolvedCount = fetchedDetails.length - solvedCount;
 
+        // Calculate the percentage
+        solvedPercentage = (solvedCount / fetchedDetails.length) * 100;
+        unsolvedPercentage = (unsolvedCount / fetchedDetails.length) * 100;
+
+        // Print the results
+        print('Solved Count: $solvedCount');
+        print('Unsolved Count: $unsolvedCount');
+        print('Solved Percentage: $solvedPercentage%');
+        print('Unsolved Percentage: $unsolvedPercentage%');
         setState(() {
           customerDetails = fetchedDetails;
         });
+        statusPercentage.setSolvedCount(solvedCount);
+        statusPercentage.setunSolvedCount(unsolvedCount);
+        statusPercentage.setSolvedPercent(solvedPercentage);
+        statusPercentage.setUnsolvedPercent(unsolvedPercentage);
+        print("the value of set is ${statusPercentage.solvedCount}");
       } else {
         throw Exception('Failed to load data');
       }

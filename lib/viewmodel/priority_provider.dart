@@ -10,7 +10,8 @@ class PriorityService {
   static final StreamController<Map<String, int>> _priorityController =
       StreamController<Map<String, int>>.broadcast();
 
-  static Stream<Map<String, int>> get priorityStream => _priorityController.stream;
+  static Stream<Map<String, int>> get priorityStream =>
+      _priorityController.stream;
 
   static void updateCounts(List<CustomerDetail> customerDetails) {
     highPriorityCount = 0;
@@ -20,6 +21,7 @@ class PriorityService {
     for (var detail in customerDetails) {
       switch (detail.priority.toLowerCase()) {
         case 'high':
+          print("this is working");
           highPriorityCount++;
           break;
         case 'medium':

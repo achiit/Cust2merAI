@@ -3,9 +3,12 @@ import 'package:admin/controllers/MenuAppController.dart';
 import 'package:admin/data/apiService.dart';
 import 'package:admin/models/customerModel.dart';
 import 'package:admin/screens/main/main_screen.dart';
+import 'package:admin/viewmodel/percentage.dart';
+import 'package:admin/viewmodel/solved_status_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 void main() async {
   final apiService = ApiService();
@@ -40,6 +43,12 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(
             create: (context) => MenuAppController(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => SolvedStatusProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => StatusPercentage(),
           ),
         ],
         child: MainScreen(),

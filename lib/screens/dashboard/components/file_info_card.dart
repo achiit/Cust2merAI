@@ -1,10 +1,12 @@
 import 'package:admin/models/MyFiles.dart';
+import 'package:admin/viewmodel/percentage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants.dart';
 
-class FileInfoCard extends StatelessWidget {
+class FileInfoCard extends StatefulWidget {
   const FileInfoCard({
     Key? key,
     required this.info,
@@ -13,7 +15,20 @@ class FileInfoCard extends StatelessWidget {
   final CloudStorageInfo info;
 
   @override
+  State<FileInfoCard> createState() => _FileInfoCardState();
+}
+
+class _FileInfoCardState extends State<FileInfoCard> {
+  void initState() {
+    super.initState();
+    print(
+        "the percentage is ${widget.info.solvedCount! + widget.info.unsolvedCount!}");
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Access the solved and unsolved percentages from the provider
+    var total = (widget.info.solvedCount! + widget.info.unsolvedCount!);
     return Container(
       padding: EdgeInsets.all(defaultPadding),
       decoration: BoxDecoration(
@@ -32,39 +47,34 @@ class FileInfoCard extends StatelessWidget {
                 height: 40,
                 width: 40,
                 decoration: BoxDecoration(
-                  color: info.color!.withOpacity(0.1),
+                  color: widget.info.color!.withOpacity(0.1),
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
                 ),
-                child: SvgPicture.asset(
-                  info.svgSrc!,
-                  colorFilter: ColorFilter.mode(
-                      info.color ?? Colors.black, BlendMode.srcIn),
+                child: Text(
+                  "${widget.info.solvedCount} ",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall!
+                      .copyWith(color: Colors.white70),
                 ),
               ),
               Icon(Icons.more_vert, color: Colors.white54)
             ],
           ),
           Text(
-            info.title!,
+            widget.info.title!,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
           ProgressLine(
-            color: info.color,
-            percentage: info.percentage,
+            color: widget.info.color,
+            percentage: widget.info.solvedpercentage,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "${info.numOfFiles} Files",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(color: Colors.white70),
-              ),
-              Text(
-                info.totalStorage!,
+                "${total}",
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall!
@@ -86,7 +96,7 @@ class ProgressLine extends StatelessWidget {
   }) : super(key: key);
 
   final Color? color;
-  final int? percentage;
+  final double? percentage;
 
   @override
   Widget build(BuildContext context) {
